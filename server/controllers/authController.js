@@ -1,5 +1,9 @@
 import User from '../models/User.js';
 import jwt from 'jsonwebtoken';
+import libphonenumber from 'google-libphonenumber';
+import { countries } from 'country-data';
+
+const phoneUtil = libphonenumber.PhoneNumberUtil.getInstance(); // ✅ already defined correctly here
 
 // Register a new user
 export const registerUser = async (req, res) => {
@@ -15,7 +19,22 @@ export const registerUser = async (req, res) => {
       return res.status(409).json({ message: 'Email already in use' });
     }
 
-    const user = await User.create({ name, email, password, phone });
+    // ✅ Determine country and currency from phone number
+    let currency = 'USD'; // fallback
+    try {
+      const parsedNumber = phoneUtil.parse(phone);
+      const regionCode = phoneUtil.getRegionCodeForNumber(parsedNumber);
+      const country = countries[regionCode];
+
+      if (country && country.currencies.length > 0) {
+        currency = country.currencies[0]; // e.g. 'DZD'
+      }
+    } catch (err) {
+      console.warn('⚠️ Failed to determine currency from phone:', err.message);
+    }
+
+    // ✅ Create user with currency
+    const user = await User.create({ name, email, password, phone, currency });
 
     const token = jwt.sign(
       { id: user._id, role: user.role },
@@ -30,6 +49,7 @@ export const registerUser = async (req, res) => {
         email: user.email,
         phone: user.phone,
         role: user.role,
+        currency: user.currency,
       },
       token,
     });
@@ -66,6 +86,7 @@ export const loginUser = async (req, res) => {
         email: user.email,
         phone: user.phone,
         role: user.role,
+        currency: user.currency,
       },
       token,
     });
