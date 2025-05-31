@@ -37,6 +37,11 @@ const userSchema = new mongoose.Schema({
     trim: true,
     match: [/^\+?[1-9]\d{1,14}$/, 'Please enter a valid phone number'] 
   },
+  currency: {
+  type: String,
+  required: true,
+  default: 'USD' // fallback if we can't determine it
+},
   createdAt: {
     type: Date,
     default: Date.now
