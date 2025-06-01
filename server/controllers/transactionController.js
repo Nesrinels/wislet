@@ -1,12 +1,34 @@
+import mongoose from 'mongoose';
 import Transaction from '../models/Transaction.js';
+import Category from '../models/Category.js';
 
-// Create a new transaction
+/* ─────────────────────────  CREATE  ───────────────────────── */
 export const createTransaction = async (req, res) => {
   try {
     const { type, amount, category, description, currency, date } = req.body;
 
     if (!type || !amount || !category) {
-      return res.status(400).json({ message: 'Type, amount, and category are required' });
+      return res
+        .status(400)
+        .json({ message: 'Type, amount, and category are required' });
+    }
+
+    // 1️⃣ the category field coming in the body is **an ObjectId string**
+    const foundCategory = await Category.findOne({
+      _id: category,
+      user: req.user.id,
+    });
+
+    if (!foundCategory) {
+      return res
+        .status(404)
+        .json({ message: 'Category not found or not yours' });
+    }
+
+    if (foundCategory.type !== type) {
+      return res.status(400).json({
+        message: `Category type mismatch. This category is for “${foundCategory.type}” transactions.`,
+      });
     }
 
     const transaction = await Transaction.create({
@@ -25,23 +47,51 @@ export const createTransaction = async (req, res) => {
   }
 };
 
-// Get all transactions for a user
+/* ────────────────────────  GET MANY  ──────────────────────── */
 export const getTransactions = async (req, res) => {
   try {
-    const transactions = await Transaction.find({ user: req.user.id }).sort({ date: -1 });
+    const { category } = req.query; // name, e.g. “groceries”
+    const filter = { user: req.user.id };
+
+    if (category) {
+      const normalized = category.trim().toLowerCase();
+
+      // find the category document that belongs to this user & matches name
+      const foundCategory = await Category.findOne({
+        name: { $regex: new RegExp(`^${normalized}$`, 'i') },
+        user: req.user.id,
+      });
+
+      if (!foundCategory) {
+        return res
+          .status(404)
+          .json({ message: `Category “${category}” not found` });
+      }
+
+      filter.category = foundCategory._id;
+    }
+
+    const transactions = await Transaction.find(filter)
+      .populate('category', 'name type icon')
+      .sort({ date: -1 });
+
+    // temporary debug
+    console.log('Filter used →', filter);
+    console.log('Returned →', transactions.length, 'transaction(s)');
+
     res.status(200).json(transactions);
   } catch (err) {
     res.status(500).json({ message: err.message });
   }
 };
 
-// Get a specific transaction
+/* ─────────────────────────  GET ONE  ───────────────────────── */
 export const getTransactionById = async (req, res) => {
   try {
     const transaction = await Transaction.findOne({
       _id: req.params.id,
       user: req.user.id,
-    });
+    }).populate('category', 'name type icon'); // ← fixed populate
 
     if (!transaction) {
       return res.status(404).json({ message: 'Transaction not found' });
@@ -53,17 +103,19 @@ export const getTransactionById = async (req, res) => {
   }
 };
 
-// Update a transaction
+/* ─────────────────────────  UPDATE  ───────────────────────── */
 export const updateTransaction = async (req, res) => {
   try {
     const transaction = await Transaction.findOneAndUpdate(
       { _id: req.params.id, user: req.user.id },
       req.body,
       { new: true }
-    );
+    ).populate('category', 'name type icon');
 
     if (!transaction) {
-      return res.status(404).json({ message: 'Transaction not found or not yours' });
+      return res
+        .status(404)
+        .json({ message: 'Transaction not found or not yours' });
     }
 
     res.status(200).json(transaction);
@@ -72,7 +124,7 @@ export const updateTransaction = async (req, res) => {
   }
 };
 
-// Delete a transaction
+/* ─────────────────────────  DELETE  ───────────────────────── */
 export const deleteTransaction = async (req, res) => {
   try {
     const transaction = await Transaction.findOneAndDelete({
@@ -81,10 +133,26 @@ export const deleteTransaction = async (req, res) => {
     });
 
     if (!transaction) {
-      return res.status(404).json({ message: 'Transaction not found or not yours' });
+      return res
+        .status(404)
+        .json({ message: 'Transaction not found or not yours' });
     }
 
     res.status(200).json({ message: 'Transaction deleted' });
+  } catch (err) {
+    res.status(500).json({ message: err.message });
+  }
+};
+
+/* ───────────  (OPTIONAL) GET ALL BY CATEGORY ID ROUTE  ────────── */
+export const getTransactionsByCategory = async (req, res) => {
+  try {
+    const transactions = await Transaction.find({
+      user: req.user.id,
+      category: req.params.categoryId,
+    }).populate('category', 'name type icon');
+
+    res.status(200).json(transactions);
   } catch (err) {
     res.status(500).json({ message: err.message });
   }
