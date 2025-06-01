@@ -5,6 +5,7 @@ import {
   getTransactionById,
   updateTransaction,
   deleteTransaction,
+  getTransactionsByCategory
 } from '../controllers/transactionController.js';
 import { protect } from '../middleware/authMiddleware.js';
 
@@ -15,6 +16,8 @@ router.use(protect); // All routes below need auth
 router.route('/')
   .post(createTransaction)
   .get(getTransactions);
+
+router.get('/by-category/:categoryId', getTransactionsByCategory);
 
 router.route('/:id')
   .get(getTransactionById)
