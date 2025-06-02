@@ -6,6 +6,7 @@ import authRoutes from './routes/authRoutes.js';
 import userRoutes from './routes/userRoutes.js';
 import transactionRoutes from './routes/transactionRoutes.js';
 import categoryRoutes from './routes/categoryRoutes.js';
+import analyticsRoutes from './routes/analyticsRoutes.js';
 
 dotenv.config();
 
@@ -19,6 +20,7 @@ app.use('/api/auth', authRoutes);
 app.use('/api/users', userRoutes);
 app.use('/api/transactions', transactionRoutes);
 app.use('/api/categories', categoryRoutes);
+app.use('/api/analytics', analyticsRoutes);
 
 // Test route
 app.get('/api/ping', (req, res) => {
