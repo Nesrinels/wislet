@@ -13,7 +13,7 @@ export const createTransaction = async (req, res) => {
         .json({ message: 'Type, amount, and category are required' });
     }
 
-    // 1️⃣ the category field coming in the body is **an ObjectId string**
+    //  the category field coming in the body is **an ObjectId string**
     const foundCategory = await Category.findOne({
       _id: category,
       user: req.user.id,
@@ -144,7 +144,7 @@ export const deleteTransaction = async (req, res) => {
   }
 };
 
-/* ───────────  (OPTIONAL) GET ALL BY CATEGORY ID ROUTE  ────────── */
+/* ───────────   GET ALL BY CATEGORY ID ROUTE  ────────── */
 export const getTransactionsByCategory = async (req, res) => {
   try {
     const transactions = await Transaction.find({
