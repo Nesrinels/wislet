@@ -1,6 +1,7 @@
 import mongoose from 'mongoose';
 import Transaction from '../models/Transaction.js';
 import Category from '../models/Category.js';
+import { sendNotificationEmail } from '../utils/emailService.js';
 
 /* ─────────────────────────  CREATE  ───────────────────────── */
 export const createTransaction = async (req, res) => {
@@ -40,6 +41,13 @@ export const createTransaction = async (req, res) => {
       currency,
       date,
     });
+
+    // Send notification email
+await sendNotificationEmail({
+  to: req.user.email, // assuming you're attaching user's email in auth middleware
+  subject: 'New Income/Expense Logged',
+  text: `Hi ${req.user.username || ''},\n\nYou successfully added a new ${type} transaction of ${amount} ${currency || ''} in category "${foundCategory.name}".\n\nDescription: ${description || '—'}\nDate: ${new Date(date).toLocaleDateString()}\n\nThank you for using Wislet!`,
+});
 
     res.status(201).json(transaction);
   } catch (err) {
