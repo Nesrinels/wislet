@@ -4,11 +4,15 @@ import { BrowserRouter as Router, Routes, Route } from 'react-router-dom'
 import App from './App.jsx'
 import SignUp from './pages/auth/SignUp.jsx'
 import './index.css'
+import HomePage from '@/pages/HomePage';
+import './styles/fonts.css';
+
 
 createRoot(document.getElementById('root')).render(
   <StrictMode>
     <Router>
       <Routes>
+         <Route path="/home" element={<HomePage />} />
         <Route path="/" element={<App />} />
         <Route path="/signup" element={<SignUp />} />
         {/* Add more routes here as needed */}

@@ -1,8 +1,7 @@
-import { useState } from 'react';
-import CoinStack from './assets/coins-stack.svg';
-import Coins from './assets/2coins.svg';
-import OblicCoin from './assets/oblic-coin.svg';
-import CoinStack2 from './assets/coins-stack2.svg';
+import CoinStack from './assets/images/coins-stack.svg';
+import Coins from './assets/images/2coins.svg';
+import OblicCoin from './assets/images/oblic-coin.svg';
+import CoinStack2 from './assets/images/coins-stack2.svg';
 
 function App() {
 
@@ -10,7 +9,7 @@ function App() {
     <div className="min-h-screen bg-black text-white font-sans relative overflow-hidden">
       {/* Header */}
       <header className="flex justify-between items-center p-6">
-        <div className="text-xl font-bold">Wislet</div>
+        <div className="text-xl font-nohemi font-regular">Wislet</div>
         <div className="flex gap-4">
           <button className="border border-white text-white px-4 py-1 rounded-full hover:bg-white hover:text-gray-900 transition">
             Log in
