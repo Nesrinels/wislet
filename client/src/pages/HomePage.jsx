@@ -1,20 +1,25 @@
 // src/pages/HomePage.jsx
 import Navbar from '@/components/common/Navbar';
+import Menu from '@/components/common/Menu';
+import CoinStack2 from '@/assets/images/coins-stack2.svg';
 
 function HomePage() {
   return (
     <>
+    <div className=' bg-background'>
       <Navbar />
-      <main className="h-screen flex items-center justify-between bg-black text-white px-12">
+      <main className="h-screen flex items-center justify-between bg-background text-seasalt px-12">
         <div>
-          <h1 className="text-5xl font-bold">Take Control Of Your Finances</h1>
-          <div className="mt-8 flex gap-4">
-            <button className="bg-yellow-400 rounded-full py-2 px-6">Features</button>
-            <button className="bg-yellow-400 rounded-full py-2 px-6">About</button>
-          </div>
+          <h1 className="text-8xl font-normal">Take Control Of Your <br/> Finances</h1>
         </div>
-        <img src="/path/to/coins-stack2.svg" alt="Coins" className="w-40" />
-      </main>
+        <img
+         src={CoinStack2}
+         alt="Coin stack"
+         className="absolute top-24 right-12 z-10"
+        />      
+        </main>
+      <Menu />
+      </div>
     </>
   );
 }

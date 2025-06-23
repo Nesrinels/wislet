@@ -3,10 +3,10 @@ import { Link } from 'react-router-dom';
 
 const AuthButtons = () => (
   <div className="flex gap-2">
-    <Link to="/login" className="border px-4 py-2 rounded-full text-white hover:bg-white hover:text-black transition">
+    <Link to="/login" className="border px-4 py-2 rounded-3xl text-white hover:bg-white hover:text-black transition font-light">
       Log in
     </Link>
-    <Link to="/signup" className="bg-yellow-400 px-4 py-2 rounded-full text-black hover:bg-yellow-300 transition">
+    <Link to="/signup" className="bg-seasalt px-4 py-2 rounded-3xl text-yellow hover:bg-yellow-300 transition font-light">
       Sign up
     </Link>
   </div>
