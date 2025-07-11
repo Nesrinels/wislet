@@ -23,7 +23,7 @@ app.use('/api/categories', categoryRoutes);
 app.use('/api/analytics', analyticsRoutes);
 
 // Test route
-app.get('/api/ping', (req, res) => {
+app.get('/api', (req, res) => {
   res.json({ message: 'Server is running' });
 });
 

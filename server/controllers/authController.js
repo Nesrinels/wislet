@@ -3,7 +3,7 @@ import jwt from 'jsonwebtoken';
 import libphonenumber from 'google-libphonenumber';
 import { countries } from 'country-data';
 
-const phoneUtil = libphonenumber.PhoneNumberUtil.getInstance(); // ✅ already defined correctly here
+const phoneUtil = libphonenumber.PhoneNumberUtil.getInstance(); 
 
 // Register a new user
 export const registerUser = async (req, res) => {

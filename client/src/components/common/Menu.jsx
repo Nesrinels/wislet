@@ -1,6 +1,6 @@
 import {Home} from 'react-feather';
 
-const Menu = () => {
+const Menu = () => (
   
   
   <nav className="fixed bottom-10 left-1/2 transform -translate-x-1/2 flex items-center gap-12 bg-yellow text-seasalt rounded-full shadow-lg w-[350px] h-[45px]">
@@ -24,6 +24,6 @@ const Menu = () => {
        About
       </button>
   </nav>
-};
+);
 
 export default Menu;

@@ -1,85 +1,37 @@
-import { Link } from 'react-router-dom'
+import React from 'react';
+import CoinStack3 from '@/assets/images/coins-stack3.svg';
+import RegistrationForm from '@/components/auth/RegistrationForm';
 
 function SignUp() {
   return (
-    <div className="min-h-screen bg-gray-900 text-white flex items-center justify-center px-6">
-      <div className="max-w-md w-full">
-        {/* Header */}
-        <div className="text-center mb-8">
-          <Link to="/" className="text-2xl font-bold text-yellow-400 hover:text-yellow-300">
-            ← Wallet
-          </Link>
-          <h1 className="text-3xl font-bold mt-4">Create Account</h1>
-          <p className="text-gray-400 mt-2">Join thousands of users managing their finances</p>
+    <div className="min-h-screen overflow-x-hidden bg-white flex flex-col md:flex-row">
+      <div className="w-full md:w-1/2 px-6 sm:px-12 py-12 flex flex-col">
+        <div className="mb-8">
+          <h2 className="text-4xl font-light text-black mb-8 pt-5">Wislet</h2>
+          <h1 className="text-5xl font-bold text-yellow mb-6 pt-10">Sign up</h1>
         </div>
 
-        {/* Sign Up Form */}
-        <div className="bg-gray-800 p-8 rounded-xl border border-gray-700">
-          <form className="space-y-6">
-            <div>
-              <label className="block text-sm font-medium text-gray-300 mb-2">
-                Full Name
-              </label>
-              <input
-                type="text"
-                className="w-full px-4 py-3 bg-gray-700 border border-gray-600 rounded-lg focus:ring-2 focus:ring-yellow-400 focus:border-transparent text-white placeholder-gray-400"
-                placeholder="Enter your full name"
-              />
-            </div>
+        <RegistrationForm />
 
-            <div>
-              <label className="block text-sm font-medium text-gray-300 mb-2">
-                Email Address
-              </label>
-              <input
-                type="email"
-                className="w-full px-4 py-3 bg-gray-700 border border-gray-600 rounded-lg focus:ring-2 focus:ring-yellow-400 focus:border-transparent text-white placeholder-gray-400"
-                placeholder="Enter your email"
-              />
-            </div>
+        <p className="text-center text-sm font-light text-gray-600 mt-6">
+          You have an account?{' '}
+          <span className="text-yellow cursor-pointer hover:underline">Sign in</span>
+        </p>
+      </div>
 
-            <div>
-              <label className="block text-sm font-medium text-gray-300 mb-2">
-                Password
-              </label>
-              <input
-                type="password"
-                className="w-full px-4 py-3 bg-gray-700 border border-gray-600 rounded-lg focus:ring-2 focus:ring-yellow-400 focus:border-transparent text-white placeholder-gray-400"
-                placeholder="Create a password"
-              />
-            </div>
-
-            <div>
-              <label className="block text-sm font-medium text-gray-300 mb-2">
-                Confirm Password
-              </label>
-              <input
-                type="password"
-                className="w-full px-4 py-3 bg-gray-700 border border-gray-600 rounded-lg focus:ring-2 focus:ring-yellow-400 focus:border-transparent text-white placeholder-gray-400"
-                placeholder="Confirm your password"
-              />
-            </div>
-
-            <button
-              type="submit"
-              className="w-full px-6 py-3 bg-yellow-400 text-gray-900 font-semibold rounded-lg hover:bg-yellow-300 transition-all transform hover:scale-105"
-            >
-              Create Account
-            </button>
-          </form>
-
-          <div className="mt-6 text-center">
-            <p className="text-gray-400">
-              Already have an account?{' '}
-              <Link to="/login" className="text-yellow-400 hover:text-yellow-300">
-                Sign In
-              </Link>
-            </p>
-          </div>
+      <div className="hidden md:flex w-full md:w-1/2 bg-background text-seasalt relative items-end justify-start px-8 pb-8">
+        <img
+          src={CoinStack3}
+          alt="Finance illustration"
+          className="object-contain max-w-[550px] max-h-[550px] mx-auto"
+        />
+        <div className="absolute bottom-6 left-8 text-left">
+          <h2 className="text-4xl font-bold text-seasalt mb-2">One Website</h2>
+          <h2 className="text-seasalt font-bold text-4xl">Take control of your finances</h2>
         </div>
       </div>
     </div>
-  )
+  );
 }
 
-export default SignUp
+export default SignUp;

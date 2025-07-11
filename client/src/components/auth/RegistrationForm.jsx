@@ -1,165 +1,137 @@
-import { useState } from 'react'
+import React, { useState } from 'react';
+import { Mail, Lock, User, Eye, EyeOff } from 'react-feather';
+import { useNavigate } from 'react-router-dom';
+import axios from 'axios';
+import 'react-phone-number-input/style.css';
+import PhoneInput from 'react-phone-number-input';
 
-export default function RegistrationForm() {
+function RegistrationForm() {
+  const navigate = useNavigate();
+  const baseURL = import.meta.env.VITE_API_URL;
+
+  const [showPassword, setShowPassword] = useState(false);
   const [formData, setFormData] = useState({
     email: '',
     password: '',
     name: '',
     phone: '',
-    agreeTerms: false
-  })
+    agreeToTerms: false,
+  });
 
-  const handleChange = (e) => {
-    const { name, value, type, checked } = e.target
-    setFormData(prev => ({
+  const isFormValid =
+    formData.email.trim() !== '' &&
+    formData.password.trim() !== '' &&
+    formData.name.trim() !== '' &&
+    formData.phone.trim() !== '' &&
+    formData.agreeToTerms;
+
+  const handleInputChange = (e) => {
+    const { name, value, type, checked } = e.target;
+    setFormData((prev) => ({
       ...prev,
-      [name]: type === 'checkbox' ? checked : value
-    }))
-  }
+      [name]: type === 'checkbox' ? checked : value,
+    }));
+  };
 
-  const handleSubmit = (e) => {
-    e.preventDefault()
-    // Handle form submission
-    console.log(formData)
-  }
+  const handleSubmit = async (e) => {
+    e.preventDefault();
+
+    try {
+      const response = await axios.post(`${baseURL}/auth/register`, {
+        name: formData.name,
+        email: formData.email,
+        password: formData.password,
+        phone: formData.phone, // Already in full international format
+      });
+
+      console.log('Registration successful:', response.data);
+      navigate('/home');
+    } catch (error) {
+      console.error('Registration failed:', error.response?.data || error.message);
+    }
+  };
 
   return (
-    <div className="min-h-screen bg-gray-50 flex">
-      {/* Left Column - Form */}
-      <div className="w-full md:w-1/2 p-8 md:p-12 lg:p-20 flex flex-col justify-center">
-        <div className="max-w-md mx-auto w-full">
-          <h1 className="text-3xl font-bold text-gray-900 mb-2">Wislet</h1>
-          <h2 className="text-xl font-semibold text-gray-800 mb-6">Sign up</h2>
-          
-          <form onSubmit={handleSubmit} className="space-y-4">
-            {/* Email */}
-            <div className="space-y-1">
-              <label className="flex items-center gap-3 cursor-pointer">
-                <input
-                  type="checkbox"
-                  checked={!!formData.email}
-                  readOnly
-                  className="h-4 w-4 rounded border-gray-300 text-blue-600 focus:ring-blue-500"
-                />
-                <span className="text-sm font-medium text-gray-700">Email</span>
-              </label>
-              <input
-                type="email"
-                name="email"
-                value={formData.email}
-                onChange={handleChange}
-                className="w-full px-4 py-2 border border-gray-300 rounded-md focus:ring-blue-500 focus:border-blue-500"
-                required
-              />
-            </div>
-
-            {/* Password */}
-            <div className="space-y-1">
-              <label className="flex items-center gap-3 cursor-pointer">
-                <input
-                  type="checkbox"
-                  checked={!!formData.password}
-                  readOnly
-                  className="h-4 w-4 rounded border-gray-300 text-blue-600 focus:ring-blue-500"
-                />
-                <span className="text-sm font-medium text-gray-700">Password</span>
-              </label>
-              <input
-                type="password"
-                name="password"
-                value={formData.password}
-                onChange={handleChange}
-                className="w-full px-4 py-2 border border-gray-300 rounded-md focus:ring-blue-500 focus:border-blue-500"
-                required
-              />
-            </div>
-
-            {/* Name */}
-            <div className="space-y-1">
-              <label className="flex items-center gap-3 cursor-pointer">
-                <input
-                  type="checkbox"
-                  checked={!!formData.name}
-                  readOnly
-                  className="h-4 w-4 rounded border-gray-300 text-blue-600 focus:ring-blue-500"
-                />
-                <span className="text-sm font-medium text-gray-700">Name</span>
-              </label>
-              <input
-                type="text"
-                name="name"
-                value={formData.name}
-                onChange={handleChange}
-                className="w-full px-4 py-2 border border-gray-300 rounded-md focus:ring-blue-500 focus:border-blue-500"
-              />
-            </div>
-
-            {/* Phone */}
-            <div className="space-y-1">
-              <label className="flex items-center gap-3 cursor-pointer">
-                <input
-                  type="checkbox"
-                  checked={!!formData.phone}
-                  readOnly
-                  className="h-4 w-4 rounded border-gray-300 text-blue-600 focus:ring-blue-500"
-                />
-                <span className="text-sm font-medium text-gray-700">Phone number</span>
-              </label>
-              <input
-                type="tel"
-                name="phone"
-                value={formData.phone}
-                onChange={handleChange}
-                className="w-full px-4 py-2 border border-gray-300 rounded-md focus:ring-blue-500 focus:border-blue-500"
-              />
-            </div>
-
-            {/* Terms checkbox */}
-            <div className="flex items-start">
-              <div className="flex items-center h-5">
-                <input
-                  id="terms"
-                  name="agreeTerms"
-                  type="checkbox"
-                  checked={formData.agreeTerms}
-                  onChange={handleChange}
-                  className="h-4 w-4 rounded border-gray-300 text-blue-600 focus:ring-blue-500"
-                  required
-                />
-              </div>
-              <label htmlFor="terms" className="ml-2 block text-sm text-gray-700">
-                I confirm that I have read and agree with Terms and Conditions and Privacy Policy
-              </label>
-            </div>
-
-            {/* Submit button */}
-            <button
-              type="submit"
-              className="w-full bg-blue-600 text-white py-2 px-4 rounded-md hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2 transition-colors"
-            >
-              Sign up
-            </button>
-          </form>
-
-          <p className="mt-4 text-center text-sm text-gray-600">
-            You have an account?{' '}
-            <a href="#" className="font-medium text-blue-600 hover:text-blue-500">
-              Login
-            </a>
-          </p>
-        </div>
+    <form className="space-y-4" onSubmit={handleSubmit}>
+      <div className="relative">
+        <Mail className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-500" size={18} />
+        <input
+          type="email"
+          name="email"
+          placeholder="Email"
+          value={formData.email}
+          onChange={handleInputChange}
+          className="w-full px-4 py-3 pl-12 bg-jasmine-20 border-0 rounded-lg text-black placeholder-black-50 focus:ring-2 focus:ring-jasmine-50 focus:outline-none hover:bg-jasmine-50 transition-all"
+        />
       </div>
 
-      {/* Right Column - Banner */}
-      <div className="hidden md:flex md:w-1/2 bg-blue-600 items-center justify-center p-12">
-        <div className="max-w-md text-white">
-          <h2 className="text-3xl font-bold mb-4">One Website</h2>
-          <h3 className="text-2xl font-semibold">Take control of your finances</h3>
-          <p className="mt-4 opacity-90">
-            Wislet helps you track expenses, manage budgets, and achieve your financial goals.
-          </p>
-        </div>
+      <div className="relative">
+        <Lock className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-500" size={18} />
+        <input
+          type={showPassword ? 'text' : 'password'}
+          name="password"
+          placeholder="Password"
+          value={formData.password}
+          onChange={handleInputChange}
+          className="w-full px-4 py-3 pl-12 pr-12 bg-jasmine-20 border-0 rounded-lg text-black placeholder-black-50 focus:ring-2 focus:ring-jasmine-50 focus:outline-none hover:bg-jasmine-50 transition-all"
+        />
+        <button
+          type="button"
+          onClick={() => setShowPassword(!showPassword)}
+          className="absolute right-3 top-3 text-gray-400 hover:text-gray-600"
+        >
+          {showPassword ? <EyeOff size={20} /> : <Eye size={20} />}
+        </button>
       </div>
-    </div>
-  )
+
+      <div className="relative">
+        <User className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-500" size={18} />
+        <input
+          type="text"
+          name="name"
+          placeholder="Name"
+          value={formData.name}
+          onChange={handleInputChange}
+          className="!pl-12 w-full bg-jasmine-20 border-0 rounded-lg px-4 py-3 text-black placeholder-black-50 focus:ring-2 focus:ring-jasmine-50 focus:outline-none hover:bg-jasmine-50 transition-all"
+        />
+      </div>
+
+      <div className="relative">
+        <PhoneInput
+  international
+  defaultCountry="DZ"
+  placeholder="Phone"
+  value={formData.phone}
+  onChange={(value) => setFormData({ ...formData, phone: value })}
+  className="w-full bg-jasmine-20 border-0 rounded-lg px-4 py-3 text-black placeholder-black-50 focus:ring-2 focus:ring-jasmine-50 focus:outline-none hover:bg-jasmine-50 transition-all"
+/>
+      </div>
+
+      <div className="flex items-center space-x-2 mt-4">
+        <input
+          type="checkbox"
+          id="terms"
+          name="agreeToTerms"
+          checked={formData.agreeToTerms}
+          onChange={handleInputChange}
+          className="w-4 h-4 accent-yellow rounded"
+        />
+        <label htmlFor="terms" className="text-base font-extralight text-black">
+          I agree to the <span className="text-yellow">Terms</span> and <span className="text-yellow">Privacy Policy</span>
+        </label>
+      </div>
+
+      <button
+        type="submit"
+        disabled={!isFormValid}
+        className={`w-full py-3 ${
+          isFormValid ? 'bg-yellow text-seasalt' : 'bg-jasmine-20 text-yellow cursor-not-allowed'
+        } font-light rounded-lg transition-all mt-6`}
+      >
+        Create Account
+      </button>
+    </form>
+  );
 }
+
+export default RegistrationForm;
